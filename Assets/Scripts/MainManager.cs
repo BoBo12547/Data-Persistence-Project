@@ -4,6 +4,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+
 public class MainManager : MonoBehaviour
 {
     public Brick BrickPrefab;
@@ -11,17 +12,22 @@ public class MainManager : MonoBehaviour
     public Rigidbody Ball;
 
     public Text ScoreText;
+    public Text BestScoreText;
     public GameObject GameOverText;
     
     private bool m_Started = false;
     private int m_Points;
     
     private bool m_GameOver = false;
+    int check ;
+    string names;
+
 
     
     // Start is called before the first frame update
     void Start()
     {
+        BestScoreText.text = "Best Score : " + GameManager.Instance.BestPlayerName[0] + " : " + GameManager.Instance.Points[0];
         const float step = 0.6f;
         int perLine = Mathf.FloorToInt(4.0f / step);
         
@@ -72,5 +78,36 @@ public class MainManager : MonoBehaviour
     {
         m_GameOver = true;
         GameOverText.SetActive(true);
+        for(int i = 0; i < GameManager.Instance.Points.Count;i++)
+        {
+            if (m_Points > GameManager.Instance.Points[i])
+            {
+                
+                if (m_Points > GameManager.Instance.Points[0])
+                {
+                    BestScoreText.text = "Best Score : " + GameManager.Instance.PlayerName + " : " + m_Points;
+                }
+                check = GameManager.Instance.Points[i];
+                GameManager.Instance.Points[i] = m_Points;
+                m_Points = check;
+                names = GameManager.Instance.BestPlayerName[i];
+                GameManager.Instance.BestPlayerName[i] = GameManager.Instance.PlayerName;
+                GameManager.Instance.PlayerName = names;
+
+                GameManager.Instance.SaveJson();
+            }
+        }
+        
+
+
     }
+
+    public void GoToMenu()
+    {
+        SceneManager.LoadScene(0);
+    }
+
+    
+
+
 }
